@@ -7,29 +7,30 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViewController: UITableViewController {
 
 //    var itemArray = ["Find Mike","Buy eggos","Destroy Demogorgon","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"]
     
     var itemArray = [Item]()
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
-    
+    //let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print(dataFilePath)
-        let newItem = Item()
-        newItem.title = "Find Mike"
-        itemArray.append(newItem)
-        
-        let newItem2 = Item()
-        newItem2.title = "Bug Eggos"
-        itemArray.append(newItem2)
-        
-        let newItem3 = Item()
-        newItem3.title = "Destroy Demogorgon"
-        itemArray.append(newItem3)
+  
+//        let newItem = Item()
+//        newItem.title = "Find Mike"
+//        itemArray.append(newItem)
+//
+//        let newItem2 = Item()
+//        newItem2.title = "Bug Eggos"
+//        itemArray.append(newItem2)
+//
+//        let newItem3 = Item()
+//        newItem3.title = "Destroy Demogorgon"
+//        itemArray.append(newItem3)
 //        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
 //            itemArray = items
 //        }
@@ -48,14 +49,14 @@ class TodoListViewController: UITableViewController {
         return cell
     }
     
-    //MARK - TableView Delegate Methods
+    //MARK: - TableView Delegate Methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         tableView.reloadData()
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
-    //MARK - Add New Items
+    //MARK: - Add New Items
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         var textField = UITextField()
         
@@ -63,21 +64,13 @@ class TodoListViewController: UITableViewController {
         
         let action =  UIAlertAction(title: "Add Item", style: .default){(action) in
             //what will happen once the user clicks the Add Item button on our UIAlert
-            let newItem = Item()
-            newItem.title = textField.text!
-            self.itemArray.append(newItem)
 
-            let encoder = PropertyListEncoder()
+            let newItem = Item(context: self.context)
+            newItem.title = textField.text!
+            newItem.done = false
+            self.itemArray.append(newItem)
             
-            do{
-                let data = try encoder.encode(self.itemArray)
-                try data.write(to: self.dataFilePath!)
-            } catch {
-                print("Error")
-            }
-            
-            
-            self.tableView.reloadData()
+            self.saveItems()
         }
         alert.addTextField{(alertTextField) in
             alertTextField.placeholder = "Create new item"
@@ -85,6 +78,17 @@ class TodoListViewController: UITableViewController {
         }
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
+    }
+    
+    //MARK: - Model Manipulation Methods
+    
+    func saveItems(){
+        do {
+            try context.save()
+        } catch {
+            print("Error saving context \(error)")
+        }
+        self.tableView.reloadData()
     }
     
     

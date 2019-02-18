@@ -11,29 +11,11 @@ import CoreData
 
 class TodoListViewController: UITableViewController {
 
-//    var itemArray = ["Find Mike","Buy eggos","Destroy Demogorgon","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p"]
-    
     var itemArray = [Item]()
-    //let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     override func viewDidLoad() {
         super.viewDidLoad()
         
-  
-//        let newItem = Item()
-//        newItem.title = "Find Mike"
-//        itemArray.append(newItem)
-//
-//        let newItem2 = Item()
-//        newItem2.title = "Bug Eggos"
-//        itemArray.append(newItem2)
-//
-//        let newItem3 = Item()
-//        newItem3.title = "Destroy Demogorgon"
-//        itemArray.append(newItem3)
-//        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
-//            itemArray = items
-//        }
     }
     
     //MARK - Tableview Datasource Methods
@@ -91,6 +73,6 @@ class TodoListViewController: UITableViewController {
         self.tableView.reloadData()
     }
     
-    
+    func
 }
 
